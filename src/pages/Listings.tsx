@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FilterSidebar } from '@/components/listings/FilterSidebar';
 import { ListingCard } from '@/components/listings/ListingCard';
+import { ListingRow } from '@/components/listings/ListingRow';
 import { DetailPanel } from '@/components/listings/DetailPanel';
-import { ChevronDown, LayoutGrid, List } from 'lucide-react';
+import { Pagination } from '@/components/listings/Pagination';
+import { ChevronDown, LayoutGrid, List, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const MOCK_LISTINGS = [
@@ -66,8 +69,35 @@ const MOCK_LISTINGS = [
   }
 ];
 
+const ITEMS_PER_PAGE = 30;
+
 const Listings = () => {
     const [selectedListing, setSelectedListing] = useState<typeof MOCK_LISTINGS[0] | null>(null);
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc'>('newest');
+    const [showSortMenu, setShowSortMenu] = useState(false);
+    
+    const totalResults = 125;
+    const totalPages = Math.ceil(totalResults / ITEMS_PER_PAGE);
+
+    // Sort listings
+    const sortedListings = [...MOCK_LISTINGS].sort((a, b) => {
+        if (sortBy === 'price-asc') {
+            const priceA = parseFloat(a.price.replace(/[^0-9.]/g, ''));
+            const priceB = parseFloat(b.price.replace(/[^0-9.]/g, ''));
+            return priceA - priceB;
+        } else if (sortBy === 'price-desc') {
+            const priceA = parseFloat(a.price.replace(/[^0-9.]/g, ''));
+            const priceB = parseFloat(b.price.replace(/[^0-9.]/g, ''));
+            return priceB - priceA;
+        }
+        return 0; // newest - default order
+    });
+
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedListings = sortedListings;
 
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
@@ -75,50 +105,152 @@ const Listings = () => {
         <Header />
       </div>
       
-      <main className="pt-40 pb-16 max-w-[1440px] mx-auto px-6">
+      <main className="pt-40 pb-16 max-w-[1440px] mx-auto px-6 pr-12">
         <div className="flex gap-8">
             {/* Left Sidebar - Filters */}
-            <aside className="hidden lg:block sticky top-40 h-[calc(100vh-160px)] overflow-y-auto w-[300px] flex-shrink-0 scrollbar-none pb-10 transition-all duration-300">
+            <motion.aside 
+                className="hidden lg:block sticky top-40 h-[calc(100vh-160px)] overflow-y-auto w-[300px] flex-shrink-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pb-10 pr-3"
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+            >
                 <FilterSidebar />
-            </aside>
+            </motion.aside>
 
             {/* Center - Results */}
             <div className="flex-1 min-w-0">
                 {/* Results Header */}
                 <div className="flex items-center justify-between mb-6">
-                    <p className="text-muted-foreground">Showing <span className="font-semibold text-foreground">125</span> results</p>
+                    <p className="text-muted-foreground">Showing <span className="font-semibold text-foreground">{totalResults}</span> results</p>
                     <div className="flex items-center gap-3">
-                        <Button variant="outline" className="h-9 gap-2">
-                            Newest <ChevronDown className="w-4 h-4" />
-                        </Button>
+                        {/* Sort Dropdown */}
+                        <div className="relative">
+                            <Button 
+                                variant="outline" 
+                                className="h-9 gap-2"
+                                onClick={() => setShowSortMenu(!showSortMenu)}
+                            >
+                                {sortBy === 'newest' && 'Newest'}
+                                {sortBy === 'price-asc' && 'Price: Low to High'}
+                                {sortBy === 'price-desc' && 'Price: High to Low'}
+                                <ChevronDown className="w-4 h-4" />
+                            </Button>
+                            {showSortMenu && (
+                                <div className="absolute top-full mt-2 right-0 bg-white border border-border rounded-lg shadow-lg py-1 min-w-[180px] z-10">
+                                    <button
+                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                        className="w-full px-4 py-2 text-left text-sm hover:bg-secondary transition-colors flex items-center justify-between"
+                                    >
+                                        Newest
+                                        {sortBy === 'newest' && <Check className="w-4 h-4 text-primary" />}
+                                    </button>
+                                    <button
+                                        onClick={() => { setSortBy('price-asc'); setShowSortMenu(false); }}
+                                        className="w-full px-4 py-2 text-left text-sm hover:bg-secondary transition-colors flex items-center justify-between"
+                                    >
+                                        Price: Low to High
+                                        {sortBy === 'price-asc' && <Check className="w-4 h-4 text-primary" />}
+                                    </button>
+                                    <button
+                                        onClick={() => { setSortBy('price-desc'); setShowSortMenu(false); }}
+                                        className="w-full px-4 py-2 text-left text-sm hover:bg-secondary transition-colors flex items-center justify-between"
+                                    >
+                                        Price: High to Low
+                                        {sortBy === 'price-desc' && <Check className="w-4 h-4 text-primary" />}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         <div className="flex items-center bg-white rounded-lg border border-border p-1">
-                            <button className="p-1.5 rounded-md bg-secondary text-foreground shadow-sm">
+                            <button 
+                                onClick={() => setViewMode('grid')}
+                                className={cn(
+                                    "p-1.5 rounded-md transition-colors",
+                                    viewMode === 'grid' ? "bg-secondary text-foreground shadow-sm" : "text-muted-foreground hover:bg-secondary/50"
+                                )}
+                            >
                                 <LayoutGrid className="w-4 h-4" />
                             </button>
-                            <button className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary/50">
+                            <button 
+                                onClick={() => setViewMode('list')}
+                                className={cn(
+                                    "p-1.5 rounded-md transition-colors",
+                                    viewMode === 'list' ? "bg-secondary text-foreground shadow-sm" : "text-muted-foreground hover:bg-secondary/50"
+                                )}
+                            >
                                 <List className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Grid */}
-                <div 
+                {/* Grid/List View */}
+                <motion.div 
                     className={cn(
-                        "grid gap-6 pb-10 transition-all duration-300 ease-in-out",
-                        selectedListing 
-                            ? "grid-cols-1 md:grid-cols-2" 
-                            : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+                        "pb-10 transition-all duration-300 ease-in-out",
+                        viewMode === 'grid' 
+                            ? cn(
+                                "grid gap-6",
+                                selectedListing 
+                                    ? "grid-cols-1 md:grid-cols-2" 
+                                    : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+                              )
+                            : "flex flex-col gap-4"
                     )}
+                    key={viewMode}
+                    initial="hidden"
+                    animate="show"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.1,
+                                delayChildren: 0.2
+                            }
+                        }
+                    }}
                 >
-                    {MOCK_LISTINGS.map((listing) => (
-                        <ListingCard 
+                    {paginatedListings.map((listing, index) => (
+                        <motion.div
                             key={listing.id}
-                            {...listing}
-                            isSelected={selectedListing?.id === listing.id}
-                            onClick={() => setSelectedListing(listing)}
-                        />
+                            variants={{
+                                hidden: { opacity: 0, y: 20 },
+                                show: { 
+                                    opacity: 1, 
+                                    y: 0,
+                                    transition: {
+                                        type: "spring" as const,
+                                        stiffness: 100,
+                                        damping: 15
+                                    }
+                                }
+                            }}
+                        >
+                            {viewMode === 'grid' ? (
+                                <ListingCard 
+                                    {...listing}
+                                    isSelected={selectedListing?.id === listing.id}
+                                    onClick={() => setSelectedListing(listing)}
+                                />
+                            ) : (
+                                <ListingRow 
+                                    {...listing}
+                                    isSelected={selectedListing?.id === listing.id}
+                                    onClick={() => setSelectedListing(listing)}
+                                />
+                            )}
+                        </motion.div>
                     ))}
+                </motion.div>
+
+                {/* Pagination */}
+                <div className="mt-8">
+                    <Pagination 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
             </div>
 

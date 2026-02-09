@@ -53,12 +53,10 @@ export const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="mb-6 flex items-center gap-2">
-               <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shadow-lg shadow-accent/20">
-                  <span className="text-white font-bold text-xl">S</span>
-               </div>
-               <span className="text-2xl font-bold tracking-tight text-white">Blue Sky</span>
-            </div>
+            <div className="mb-12">
+               <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+               <p className="text-white/90 mt-2">Find your dream property</p>
+             </div>
             <h1 className="text-5xl font-bold mb-4 leading-tight">Welcome back</h1>
             <p className="text-lg text-slate-300 font-light">
               Find verified listings, trusted agents, and premium projects.
@@ -81,12 +79,9 @@ export const Login = () => {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 text-primary mb-6 lg:hidden">
-               <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">S</span>
-               </div>
-               <span className="text-lg font-bold">Blue Sky</span>
-            </Link>
+            <Link to="/" className="inline-flex items-center gap-2 mb-6 lg:hidden">
+               <span className="text-lg font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+             </Link>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Sign in to your account</h2>
             <p className="text-slate-500">Access your personalized dashboard</p>
           </div>
@@ -169,13 +164,13 @@ export const Login = () => {
 
           {/* Social Buttons */}
           <motion.div 
-            className="grid grid-cols-2 gap-4 mb-8"
+            className="mb-8"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
             <motion.button 
-              className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -186,19 +181,6 @@ export const Login = () => {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
               <span className="font-medium text-slate-700">Google</span>
-            </motion.button>
-            <motion.button 
-              className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all"
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <svg className="w-5 h-5 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.05 20.28c-.98.95-2.05.88-3.08.35-1.09-.56-2.09-.48-3.08.35 1.04 1.84 4.05 2.41 5.84-.26.69-1.03 1.15-2.22.32-2.54z"/>
-                <path d="M12.03 7.24c-.1.72.63 1.48 1.45 1.42 1.55-.14 1.34-2.82-.41-2.91-1.05.1-1.52.88-1.04 1.49z"/>
-                <path d="M12.92 9.68C11 9.49 9.17 11.2 9.17 13.06c0 2.2 1.48 3.82 3.82 3.82 1.17 0 1.77.52 1.77 1.39 0 1.25-2.13 1.05-2.13 3.12 0 1.08.91 1.69 1.91 1.69 1.72 0 2.91-2.13 2.91-3.61 0-2.31-1.57-3.69-3.79-3.69-1.29 0-1.88-.41-1.88-1.35 0-1.42 2.31-1.12 2.31-2.89 0-1.28-1.74-1.63-1.17-1.86z"/>
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-              </svg>
-              <span className="font-medium text-slate-700">Apple</span>
             </motion.button>
           </motion.div>
 

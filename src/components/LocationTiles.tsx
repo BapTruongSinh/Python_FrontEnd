@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const locations = [
   {
@@ -46,10 +47,10 @@ export const LocationTiles = () => {
               Find properties in your preferred area
             </p>
           </div>
-          <a href="#" className="text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+          <Link to="/explore" className="text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
             View all locations
             <ChevronRight className="w-5 h-5" />
-          </a>
+          </Link>
         </div>
 
         {/* Location Grid */}
@@ -67,34 +68,37 @@ export const LocationTiles = () => {
           }}
         >
           {locations.map((location) => (
-            <motion.a
+            <motion.div
               key={location.name}
-              href="#"
-              className="group relative aspect-[4/5] rounded-xl overflow-hidden card-hover"
               variants={{
                 hidden: { opacity: 0, scale: 0.95 },
                 visible: { opacity: 1, scale: 1 }
               }}
             >
-              <img
-                src={location.image}
-                alt={location.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
-              
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent" />
-              
-              {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <h3 className="font-semibold text-base mb-1 group-hover:text-accent transition-colors">
-                  {location.name}
-                </h3>
-                <p className="text-sm text-white/80">
-                  {location.listings} listings
-                </p>
-              </div>
-            </motion.a>
+              <Link
+                to="/listings"
+                className="group relative aspect-[4/5] rounded-xl overflow-hidden card-hover block"
+              >
+                <img
+                  src={location.image}
+                  alt={location.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent" />
+                
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-semibold text-base mb-1 group-hover:text-accent transition-colors">
+                    {location.name}
+                  </h3>
+                  <p className="text-sm text-white/80">
+                    {location.listings} listings
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </motion.div>
       </div>

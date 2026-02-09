@@ -18,7 +18,7 @@ export const DetailPanel = ({ listing, onClose }: DetailPanelProps) => {
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-border h-fit sticky top-24 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-lg border border-border min-h-[750px] h-fit sticky top-24 overflow-hidden">
         {/* Header Image */}
         <div className="relative h-48 w-full">
             <img src={listing.image} alt={listing.title} className="w-full h-full object-cover" />

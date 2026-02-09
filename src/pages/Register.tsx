@@ -54,12 +54,10 @@ export const Register = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="mb-6 flex items-center gap-2">
-               <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shadow-lg shadow-accent/20">
-                  <span className="text-white font-bold text-xl">S</span>
-               </div>
-               <span className="text-2xl font-bold tracking-tight text-white">Blue Sky</span>
-            </div>
+            <div className="mb-12">
+               <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+               <p className="text-white/90 mt-2">Create your account</p>
+             </div>
             <h1 className="text-5xl font-bold mb-4 leading-tight">Join the Elite</h1>
             <p className="text-lg text-slate-300 font-light">
               Create your account to access exclusive listings and personalized market insights.
@@ -82,12 +80,9 @@ export const Register = () => {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 text-primary mb-6 lg:hidden">
-               <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">S</span>
-               </div>
-               <span className="text-lg font-bold">Blue Sky</span>
-            </Link>
+            <Link to="/" className="inline-flex items-center gap-2 mb-6 lg:hidden">
+               <span className="text-lg font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+             </Link>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Create an account</h2>
             <p className="text-slate-500">Start your real estate journey today</p>
           </div>

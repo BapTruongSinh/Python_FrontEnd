@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,27 +7,48 @@ const navLinks = [
   { label: 'Buy', href: '/listings?type=buy' },
   { label: 'Sell', href: '/listings?type=sell' },
   { label: 'Rent', href: '/listings?type=rent' },
+  { label: 'Explore', href: '/explore' },
   { label: 'News', href: '#' },
 ];
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < lastScrollY || currentScrollY < 10) {
+        setIsVisible(true);
+      } 
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+        setMobileMenuOpen(false); 
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   return (
     <motion.header 
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      animate={{ y: isVisible ? 0 : -100, opacity: isVisible ? 1 : 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed top-6 left-0 right-0 z-50 pointer-events-none"
     >
       <div className="max-w-content mx-auto px-4 md:px-8 lg:px-10 pointer-events-auto">
         <div className="flex items-center justify-between h-[85px] bg-white/95 backdrop-blur-md rounded-[32px] shadow-lg px-5 relative">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
-              </div>
-              <span className="text-xl font-bold text-foreground">Blue Sky</span>
+            <a href="/" className="flex items-center gap-3 group">
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">
+                Blue Sky
+              </span>
             </a>
 
           {/* Desktop Navigation - Centered */}

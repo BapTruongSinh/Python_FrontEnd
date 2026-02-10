@@ -21,7 +21,9 @@ const MOCK_LISTINGS = [
     baths: 6,
     area: 450,
     type: "Villa",
-    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&auto=format&fit=crop",
+    latitude: 10.8045,
+    longitude: 106.7456
   },
   {
     id: 2,
@@ -32,7 +34,9 @@ const MOCK_LISTINGS = [
     baths: 2,
     area: 110,
     type: "Apartment",
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop",
+    latitude: 10.7954,
+    longitude: 106.7218
   },
   {
     id: 3,
@@ -43,7 +47,9 @@ const MOCK_LISTINGS = [
     baths: 3,
     area: 180,
     type: "Apartment",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop",
+    latitude: 10.7327,
+    longitude: 106.7099
   },
   {
     id: 4,
@@ -54,7 +60,9 @@ const MOCK_LISTINGS = [
     baths: 2,
     area: 200,
     type: "Office",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop",
+    latitude: 10.7769,
+    longitude: 106.7009
   },
   {
     id: 5,

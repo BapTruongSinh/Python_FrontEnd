@@ -1,7 +1,9 @@
+
 import { useState } from 'react';
-import { Eye, EyeOff, CheckCircle2, Shield, Lock, Building } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle2, Shield } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import logo from '@/assets/images/logo.png';
 
 // Animation variants
 const containerVariants = {
@@ -9,7 +11,7 @@ const containerVariants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.1,
       delayChildren: 0.3
     }
   }
@@ -17,15 +19,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15
-    }
-  }
+  show: { opacity: 1, y: 0 }
 };
 
 export const Login = () => {
@@ -33,31 +27,35 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Login attempt:', { email, password });
+    // Simulate login success
+    setTimeout(() => navigate('/'), 1000);
+  };
 
   return (
     <div className="flex min-h-screen w-full bg-[#F6F7F9]">
-      {/* Left Visual Panel (60%) - Hidden on mobile, visible on lg+ */}
+      {/* Left Visual Panel (60%) */}
       <div className="hidden lg:flex w-[60%] relative overflow-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80" 
-            alt="Luxury Real Estate" 
-            className="w-full h-full object-cover opacity-60"
+            src="https://images.unsplash.com/photo-1600607686527-6fb886090705?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+            alt="Modern Architecture" 
+            className="w-full h-full object-cover opacity-50 block"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
         </div>
         
-        <div className="relative z-10 flex flex-col justify-end p-16 text-white w-full max-w-2xl">
+        <div className="relative z-10 flex flex-col justify-end p-16 text-white h-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="mb-12">
-               <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
-               <p className="text-white/90 mt-2">Find your dream property</p>
-             </div>
-            <h1 className="text-5xl font-bold mb-4 leading-tight">Welcome back</h1>
+            <h1 className="text-5xl font-bold mb-4 leading-tight text-white">Welcome back</h1>
             <p className="text-lg text-slate-300 font-light">
               Find verified listings, trusted agents, and premium projects.
               <br />Experience the future of real estate trading.
@@ -79,8 +77,8 @@ export const Login = () => {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 mb-6 lg:hidden">
-               <span className="text-lg font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+            <Link to="/" className="inline-flex items-center gap-2 mb-6">
+               <img src={logo} alt="Blue Sky Logo" className="h-32 w-auto object-contain scale-125" />
              </Link>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Sign in to your account</h2>
             <p className="text-slate-500">Access your personalized dashboard</p>

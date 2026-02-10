@@ -61,7 +61,7 @@ const trustFeatures = [
 
 export const AgentTrust = () => {
   return (
-    <section className="section-padding bg-surface">
+    <section className="section-padding bg-background">
       <div className="max-w-content mx-auto px-4 md:px-8">
         {/* Section Header */}
         <div className="section-header">

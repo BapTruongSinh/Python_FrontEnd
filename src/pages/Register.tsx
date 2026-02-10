@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle2, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import logo from '@/assets/images/logo.png';
 
 // Animation variants
 const containerVariants = {
@@ -54,11 +55,7 @@ export const Register = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="mb-12">
-               <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
-               <p className="text-white/90 mt-2">Create your account</p>
-             </div>
-            <h1 className="text-5xl font-bold mb-4 leading-tight">Join the Elite</h1>
+            <h1 className="text-5xl font-bold mb-4 leading-tight text-white">Join the Elite</h1>
             <p className="text-lg text-slate-300 font-light">
               Create your account to access exclusive listings and personalized market insights.
               <br />Your journey to the perfect home starts here.
@@ -80,8 +77,8 @@ export const Register = () => {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 mb-6 lg:hidden">
-               <span className="text-lg font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">Blue Sky</span>
+            <Link to="/" className="inline-flex items-center gap-2 mb-6">
+               <img src={logo} alt="Blue Sky Logo" className="h-32 w-auto object-contain scale-125" />
              </Link>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Create an account</h2>
             <p className="text-slate-500">Start your real estate journey today</p>

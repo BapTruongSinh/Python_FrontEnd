@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/Header';
@@ -72,6 +72,10 @@ const MOCK_LISTINGS = [
 const ITEMS_PER_PAGE = 30;
 
 const Listings = () => {
+    useLayoutEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    }, []);
+
     const [selectedListing, setSelectedListing] = useState<typeof MOCK_LISTINGS[0] | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [currentPage, setCurrentPage] = useState(1);
@@ -81,7 +85,6 @@ const Listings = () => {
     const totalResults = 125;
     const totalPages = Math.ceil(totalResults / ITEMS_PER_PAGE);
 
-    // Sort listings
     const sortedListings = [...MOCK_LISTINGS].sort((a, b) => {
         if (sortBy === 'price-asc') {
             const priceA = parseFloat(a.price.replace(/[^0-9.]/g, ''));

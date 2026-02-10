@@ -3,7 +3,6 @@ import { CityHero } from '@/components/CityHero';
 import { SearchModule } from '@/components/SearchModule';
 import { FeaturedListings } from '@/components/FeaturedListings';
 import { LocationTiles } from '@/components/LocationTiles';
-import { NewProjects } from '@/components/NewProjects';
 import { HowItWorks } from '@/components/HowItWorks';
 import { AgentTrust } from '@/components/AgentTrust';
 import { Footer } from '@/components/Footer';
@@ -19,7 +18,6 @@ const Index = () => {
         </div>
         <FeaturedListings />
         <LocationTiles />
-        <NewProjects />
         <HowItWorks />
         <AgentTrust />
       </main>

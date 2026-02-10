@@ -21,7 +21,7 @@ const steps = [
 
 export const HowItWorks = () => {
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-surface">
       <div className="max-w-content mx-auto px-4 md:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">

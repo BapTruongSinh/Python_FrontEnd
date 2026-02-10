@@ -48,10 +48,8 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <div className="mb-6">
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#4300FF] via-[#0065F8] via-[#00CAFF] to-[#00FFDE] bg-clip-text text-transparent">
-                Blue Sky
-              </span>
+            <div className="mb-6 flex items-center gap-3">
+              <span className="text-3xl font-bold text-white tracking-widest">BLUE - SKY</span>
             </div>
             
             <p className="text-muted-foreground mb-6 max-w-sm">

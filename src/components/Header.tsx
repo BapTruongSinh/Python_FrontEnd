@@ -3,6 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '@/assets/images/logo.png';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navLinks = [
   { label: 'Buy', href: '/listings?type=buy' },
@@ -62,6 +71,31 @@ export const Header = () => {
                 </a>
               ))}
             </nav>
+
+            {/* User Profile Dropdown */}
+            <div className="hidden sm:flex items-center">
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex items-center gap-3 cursor-pointer hover:bg-black/5 p-2 rounded-xl transition-all select-none outline-none">
+                    <Avatar className="h-10 w-10 border border-border">
+                      <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium text-lg">John Doe</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 mt-2">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer">
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
             {/* Sign In Button */}
             <a href="/login" className="hidden sm:block">

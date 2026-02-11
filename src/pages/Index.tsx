@@ -1,5 +1,5 @@
 import { Header } from '@/components/Header';
-import { CityHero } from '@/components/CityHero';
+import { HeroCarousel } from '@/components/HeroCarousel';
 import { SearchModule } from '@/components/SearchModule';
 import { FeaturedListings } from '@/components/FeaturedListings';
 import { LocationTiles } from '@/components/LocationTiles';
@@ -12,7 +12,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        <CityHero />
+        <HeroCarousel />
         <div className="pt-8 relative z-30 mb-16">
           <SearchModule />
         </div>

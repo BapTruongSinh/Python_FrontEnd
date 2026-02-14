@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MapPin, ArrowRight, Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 import thaodienImg from '@/assets/images/thaodien.jpg';
 import nhatrangImg from '@/assets/images/nhatrang.jpg';
 import halongImg from '@/assets/images/halong.jpg';
@@ -47,11 +48,34 @@ const SLIDES = [
   }
 ];
 
-export const HeroCarousel = () => {
+export const HeroCarousel = memo(() => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { amount: 0.3 }); // Only run when 30% visible
+
+  const nextSlide = useCallback(() => {
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+  }, []);
+
+  const handleDotClick = useCallback((index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
+    setCurrentIndex(index);
+  }, [currentIndex]);
+
+  const getNextSlides = useCallback(() => {
+    const slides = [];
+    for (let i = 1; i <= 3; i++) {
+        slides.push(SLIDES[(currentIndex + i) % SLIDES.length]);
+    }
+    return slides;
+  }, [currentIndex]);
 
   useEffect(() => {
     if (!isInView) return; // Pause auto-play when not in view
@@ -60,31 +84,7 @@ export const HeroCarousel = () => {
       nextSlide();
     }, 5000);
     return () => clearInterval(timer);
-  }, [currentIndex, isInView]);
-
-  const nextSlide = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
-  };
-
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-  };
-
-  const handleDotClick = (index: number) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
-  };
-
-
-  const getNextSlides = () => {
-    const slides = [];
-    for (let i = 1; i <= 3; i++) {
-        slides.push(SLIDES[(currentIndex + i) % SLIDES.length]);
-    }
-    return slides;
-  };
+  }, [nextSlide, isInView]);
 
   return (
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-black text-white">
@@ -100,7 +100,7 @@ export const HeroCarousel = () => {
         >
             <div className="absolute inset-0 bg-black/20 z-10" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
-            <img 
+            <OptimizedImage 
                 src={SLIDES[currentIndex].image} 
                 alt={SLIDES[currentIndex].title} 
                 className="w-full h-full object-cover"
@@ -160,7 +160,7 @@ export const HeroCarousel = () => {
                             handleDotClick(slideIndex);
                         }}
                     >
-                        <img 
+                        <OptimizedImage 
                             src={slide.image} 
                             alt={slide.title} 
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -225,4 +225,4 @@ export const HeroCarousel = () => {
       </div>
     </section>
   );
-};
+});

@@ -87,9 +87,19 @@ export const Header = () => {
                 <DropdownMenuContent align="end" className="w-56 mt-2">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem 
+                    className="cursor-pointer"
+                    onClick={() => window.location.href = '/profile'}
+                  >
                     Profile
                   </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="cursor-pointer"
+                    onClick={() => window.location.href = '/your-info'}
+                  >
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
                     Logout
                   </DropdownMenuItem>

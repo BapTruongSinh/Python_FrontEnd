@@ -11,6 +11,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Explore from "./pages/Explore";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
+import ChangePassword from "./pages/ChangePassword";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/your-info" element={<ChangePassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

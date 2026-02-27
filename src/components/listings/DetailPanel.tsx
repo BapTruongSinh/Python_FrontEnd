@@ -10,7 +10,7 @@ interface DetailPanelProps {
 }
 
 export const DetailPanel = ({ listing, onClose }: DetailPanelProps) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'reviews' | 'about'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'detail'>('overview');
 
   if (!listing) return (
     <div className="h-full flex items-center justify-center text-muted-foreground bg-white rounded-xl border border-border">
@@ -69,7 +69,7 @@ export const DetailPanel = ({ listing, onClose }: DetailPanelProps) => {
 
                 <div className="border-b border-border mb-6">
                     <div className="flex gap-6">
-                        {['overview', 'reviews', 'about'].map((tab) => (
+                        {['overview', 'detail'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab as any)}
@@ -87,20 +87,69 @@ export const DetailPanel = ({ listing, onClose }: DetailPanelProps) => {
                 </div>
 
                 <div className="space-y-4 mb-8 min-h-[150px]">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                        Experience luxury living in this stunning property located in the heart of the city. 
-                        Featuring modern amenities, spacious interiors, and breathtaking views. 
-                        Perfect for families or professionals seeking a premium lifestyle.
-                    </p>
-                    
-                    <h4 className="font-semibold text-sm mt-4 mb-2">Features</h4>
-                    <div className="flex flex-wrap gap-2">
-                        {['Garden', 'Swimming Pool', 'Garage', 'Smart Home', '24/7 Security'].map((feature) => (
-                            <span key={feature} className="text-xs bg-accent/5 text-accent px-2.5 py-1 rounded-full font-medium">
-                                {feature}
-                            </span>
-                        ))}
-                    </div>
+                    {activeTab === 'overview' && (
+                        <>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Experience luxury living in this stunning property located in the heart of the city.
+                                Featuring modern amenities, spacious interiors, and breathtaking views.
+                                Perfect for families or professionals seeking a premium lifestyle.
+                            </p>
+
+                            <h4 className="font-semibold text-sm mt-4 mb-2">Features</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {['Garden', 'Swimming Pool', 'Garage', 'Smart Home', '24/7 Security'].map((feature) => (
+                                    <span key={feature} className="text-xs bg-accent/5 text-accent px-2.5 py-1 rounded-full font-medium">
+                                        {feature}
+                                    </span>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    {activeTab === 'detail' && (
+                        <>
+                            <div className="space-y-3">
+                                {[
+                                    { label: 'Property Type', value: 'Apartment' },
+                                    { label: 'Year Built', value: '2023' },
+                                    { label: 'Parking', value: '2 Spaces' },
+                                    { label: 'Floor', value: '15th / 25 floors' },
+                                    { label: 'Facing', value: 'South-East' },
+                                    { label: 'Legal', value: 'Sổ hồng' },
+                                    { label: 'Furniture', value: 'Full furnished' },
+                                    { label: 'Status', value: 'Ready to move in' },
+                                ].map((item) => (
+                                    <div key={item.label} className="flex items-center justify-between text-sm py-2 border-b border-border/50 last:border-0">
+                                        <span className="text-muted-foreground">{item.label}</span>
+                                        <span className="font-medium text-foreground">{item.value}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <h4 className="font-semibold text-sm mt-6 mb-3">Property Photos</h4>
+                            <div className="space-y-4">
+                                {[
+                                    {
+                                        src: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=600',
+                                        caption: 'Phòng khách rộng rãi với ánh sáng tự nhiên, view toàn cảnh thành phố'
+                                    },
+                                    {
+                                        src: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=600',
+                                        caption: 'Bếp hiện đại thiết kế mở, trang bị đầy đủ thiết bị cao cấp'
+                                    },
+                                    {
+                                        src: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
+                                        caption: 'Phòng ngủ chính với ban công riêng, hướng Đông Nam đón gió mát'
+                                    },
+                                ].map((photo, i) => (
+                                    <div key={i} className="rounded-xl overflow-hidden border border-border/50">
+                                        <img src={photo.src} alt={photo.caption} className="w-full h-36 object-cover" />
+                                        <p className="text-xs text-muted-foreground px-3 py-2 bg-secondary/30">{photo.caption}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Agent */}

@@ -17,6 +17,7 @@ import AppointmentDetail from "./pages/AppointmentDetail";
 import ManageProperty from "./pages/ManageProperty";
 import AddProperty from "./pages/AddProperty";
 import News from "./pages/News";
+import PropertyDetail from "./pages/PropertyDetail";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/appointment/:id" element={<AppointmentDetail />} />
           <Route path="/manage-property/:id" element={<ManageProperty />} />
           <Route path="/add-property" element={<AddProperty />} />
+          <Route path="/property/:id" element={<PropertyDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,8 +1,10 @@
 import { Heart, MapPin, Bed, Bath, Maximize } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface PropertyCardProps {
+  id?: number;
   image: string;
   price: string;
   title: string;
@@ -16,6 +18,7 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard = ({
+  id,
   image,
   price,
   title,
@@ -27,7 +30,7 @@ export const PropertyCard = ({
   isNew = false,
   className
 }: PropertyCardProps) => {
-  return (
+  const card = (
     <motion.div
       whileHover={{ y: -4 }}
       className={cn("card-elevated card-hover overflow-hidden group cursor-pointer", className)}
@@ -46,7 +49,10 @@ export const PropertyCard = ({
         </div>
 
         {/* Save Button */}
-        <button className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-white transition-all">
+        <button
+          onClick={(e) => e.preventDefault()}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-white transition-all"
+        >
           <Heart className="w-5 h-5" />
         </button>
 
@@ -85,4 +91,11 @@ export const PropertyCard = ({
       </div>
     </motion.div>
   );
+
+  if (id) {
+    return <Link to={`/property/${id}`} className="block no-underline text-inherit">{card}</Link>;
+  }
+
+  return card;
 };
+

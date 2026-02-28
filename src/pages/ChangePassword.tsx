@@ -255,7 +255,7 @@ const AccountSettings = () => {
                     <div className="mt-8 flex justify-end">
                       <Button type="submit" className="bg-[#0F766E] hover:bg-[#0F766E]/90 text-white rounded-xl px-8 h-11 font-semibold cursor-pointer">
                         <Save className="w-4 h-4 mr-2" />
-                        Lưu thay đổi
+                        Save Changes
                       </Button>
                     </div>
                   </form>

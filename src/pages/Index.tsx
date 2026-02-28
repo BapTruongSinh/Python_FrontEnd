@@ -1,7 +1,8 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import { SearchModule } from '@/components/SearchModule';
+import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 const FeaturedListings = lazy(() => import('@/components/FeaturedListings').then(module => ({ default: module.FeaturedListings })));
 const LocationTiles = lazy(() => import('@/components/LocationTiles').then(module => ({ default: module.LocationTiles })));
@@ -16,11 +17,19 @@ const SectionLoader = () => (
 );
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleHeroLoad = () => {
+    // Add a tiny delay so the transition feels intentional even if it loads instantly
+    setTimeout(() => setIsLoading(false), 300);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <LoadingScreen isLoading={isLoading} />
       <Header />
       <main>
-        <HeroCarousel />
+        <HeroCarousel isAppLoaded={!isLoading} onLoadComplete={handleHeroLoad} />
         <div className="pt-8 relative z-30 mb-16">
           <SearchModule />
         </div>

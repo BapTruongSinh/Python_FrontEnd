@@ -13,6 +13,10 @@ import Explore from "./pages/Explore";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
+import AppointmentDetail from "./pages/AppointmentDetail";
+import ManageProperty from "./pages/ManageProperty";
+import AddProperty from "./pages/AddProperty";
+import News from "./pages/News";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/news" element={<News />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/profile" element={<Profile />} />
@@ -32,6 +37,9 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/appointment/:id" element={<AppointmentDetail />} />
+          <Route path="/manage-property/:id" element={<ManageProperty />} />
+          <Route path="/add-property" element={<AddProperty />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

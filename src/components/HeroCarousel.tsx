@@ -48,11 +48,40 @@ const SLIDES = [
   }
 ];
 
-export const HeroCarousel = memo(() => {
+export const HeroCarousel = memo(({ isAppLoaded = true, onLoadComplete }: { isAppLoaded?: boolean, onLoadComplete?: () => void }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { amount: 0.3 }); // Only run when 30% visible
+
+  // Preload critical images on mount
+  useEffect(() => {
+    if (!onLoadComplete) return;
+    
+    // We want to preload the first slide and the first 3 thumbnails to make the initial render smooth.
+    const criticalImages = [
+      SLIDES[0].image,
+      ...[1, 2, 3].map(i => SLIDES[i % SLIDES.length].image)
+    ];
+    
+    let loadedCount = 0;
+    let hasLoaded = false;
+    
+    const handleImageLoad = () => {
+      loadedCount++;
+      if (loadedCount >= criticalImages.length && !hasLoaded) {
+        hasLoaded = true;
+        onLoadComplete();
+      }
+    };
+
+    criticalImages.forEach(src => {
+      const img = new Image();
+      img.onload = handleImageLoad;
+      img.onerror = handleImageLoad; // Continue even if one fails
+      img.src = src;
+    });
+  }, [onLoadComplete]);
 
   const nextSlide = useCallback(() => {
     setDirection(1);
@@ -78,13 +107,13 @@ export const HeroCarousel = memo(() => {
   }, [currentIndex]);
 
   useEffect(() => {
-    if (!isInView) return; // Pause auto-play when not in view
+    if (!isInView || !isAppLoaded) return; // Pause auto-play when not in view or still loading
     
     const timer = setInterval(() => {
       nextSlide();
     }, 5000);
     return () => clearInterval(timer);
-  }, [nextSlide, isInView]);
+  }, [nextSlide, isInView, isAppLoaded]);
 
   return (
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-black text-white">
@@ -103,6 +132,7 @@ export const HeroCarousel = memo(() => {
             <OptimizedImage 
                 src={SLIDES[currentIndex].image} 
                 alt={SLIDES[currentIndex].title} 
+                loading="eager" // Force eager loading for the main hero image
                 className="w-full h-full object-cover"
             />
         </motion.div>
@@ -113,7 +143,7 @@ export const HeroCarousel = memo(() => {
         <div className="max-w-4xl">
              <motion.div
                 initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isAppLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
             >
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight tracking-tight">
@@ -188,7 +218,7 @@ export const HeroCarousel = memo(() => {
                     <motion.div 
                         className="absolute inset-0 bg-white"
                         initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
+                        animate={isAppLoaded ? { width: "100%" } : { width: "0%" }}
                         key={currentIndex}
                         transition={{ duration: 5, ease: "linear" }}
                     />

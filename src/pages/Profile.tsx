@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Mail, Phone, MapPin, Edit, Star, Clock, CheckCircle2, Save,
   Eye, EyeOff, Users, TrendingUp, Home, Calendar, ArrowRight, X,
-  Building2, BadgeDollarSign, ShoppingCart
+  Building2, BadgeDollarSign, ShoppingCart, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Line } from "react-chartjs-2";
 import {
@@ -28,7 +29,7 @@ ChartJS.register(
 
 const USER_INFO = {
   name: "Nguyễn Văn A",
-  role: "Nhà đầu tư cá nhân",
+  role: "Individual Investor",
   joinDate: "Tháng 8, 2025",
   phone: "+84 901 234 567",
   email: "nguyenvana@example.com",
@@ -36,47 +37,29 @@ const USER_INFO = {
   avatar: "../src/assets/images/avatar1.jpg",
   cover: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1600",
   bio: "Nhà đầu tư bất động sản với hơn 5 năm kinh nghiệm trong lĩnh vực căn hộ cao cấp và biệt thự ven sông. Chuyên tư vấn đầu tư khu vực phía Đông TP.HCM.",
-  stats: { totalValue: "128 Tỷ", properties: 5, appointments: 12 },
+  stats: { totalValue: "128 Billion", properties: 5, appointments: 12 },
 };
 
-const SELL_LIST = [
-  {
-    id: 1, title: "Biệt thự ven sông Sài Gòn", price: "45 Tỷ",
-    address: "Thảo Điền, TP. Thủ Đức", status: "Đang bán",
-    views: 1240, leads: 15, daysListed: 12,
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 2, title: "Penthouse Landmark 81", price: "22 Tỷ",
-    address: "Vinhomes Central Park, Bình Thạnh", status: "Đang đàm phán",
-    views: 3100, leads: 42, daysListed: 30,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 3, title: "Nhà phố The Global City", price: "18.5 Tỷ",
-    address: "An Phú, TP. Thủ Đức", status: "Mới đăng",
-    views: 340, leads: 5, daysListed: 3,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=600",
-  },
-];
+const SELL_LIST = Array.from({ length: 24 }, (_, i) => ({
+  id: i + 1, 
+  title: i % 2 === 0 ? `Riverside Villa ${i + 1}` : `Penthouse Suite ${i + 1}`,
+  price: `${15 + i * 2} Billion VND`,
+  address: i % 2 === 0 ? "Thao Dien, Thu Duc City" : "Vinhomes Central Park",
+  status: i % 3 === 0 ? "Negotiating" : i % 2 === 0 ? "For Sale" : "New",
+  views: 1000 + i * 50, leads: 10 + i * 2, daysListed: i + 1,
+  newAppointments: i % 4 === 0 ? 0 : (i % 3) + 1, // Fake count of unread appointments
+  image: i % 2 === 0 ? "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600" : "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600",
+}));
 
-const BUY_LIST = [
-  {
-    id: 1, property: "Garden Villa – Ecopark", seller: "Trần Trung (Broker)",
-    date: "10:30 AM, 15 Thg 3", status: "Confirmed", price: "12.8 Tỷ",
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 2, property: "Shophouse Sala Premium", seller: "Lê Lan Anh (Chủ nhà)",
-    date: "14:00 PM, 18 Thg 3", status: "Pending", price: "35 Tỷ",
-    image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 3, property: "Căn hộ Masteri Centre Point", seller: "Phạm Hùng (Agent)",
-    date: "09:00 AM, 22 Thg 3", status: "Confirmed", price: "4.2 Tỷ",
-    image: "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&q=80&w=400",
-  },
-];
+const BUY_LIST = Array.from({ length: 15 }, (_, i) => ({
+  id: i + 1, 
+  property: i % 2 === 0 ? `Garden Villa – Ecopark ${i + 1}` : `Premium Shophouse ${i + 1}`,
+  seller: i % 2 === 0 ? "Tran Trung (Broker)" : "Le Lan Anh (Owner)",
+  date: `10:30 AM, ${15 + i} Mar`, 
+  status: i % 3 === 0 ? "Pending" : "Confirmed", 
+  price: `${12 + i} Billion VND`,
+  image: i % 2 === 0 ? "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=400" : "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=400",
+}));
 
 type TabKey = "profile" | "buy" | "sell";
 
@@ -88,10 +71,53 @@ const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 
 const statusColor = (s: string) => {
   if (s === "Confirmed") return "bg-emerald-50 text-emerald-700 border-emerald-200";
-  if (s === "Pending") return "bg-amber-50 text-amber-700 border-amber-200";
-  if (s === "Đang bán") return "bg-blue-50 text-blue-700 border-blue-200";
-  if (s === "Đang đàm phán") return "bg-violet-50 text-violet-700 border-violet-200";
+  if (s === "Pending" || s === "Negotiating") return "bg-amber-50 text-amber-700 border-amber-200";
+  if (s === "For Sale") return "bg-blue-50 text-blue-700 border-blue-200";
+  if (s === "New") return "bg-violet-50 text-violet-700 border-violet-200";
   return "bg-teal-50 text-teal-700 border-teal-200";
+};
+
+const PaginationControls = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange 
+}: { 
+  currentPage: number; 
+  totalPages: number; 
+  onPageChange: (page: number) => void; 
+}) => {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-4 mt-8 pb-4">
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => {
+          onPageChange(Math.max(1, currentPage - 1));
+          window.scrollTo({ top: 400, behavior: "smooth" });
+        }}
+        disabled={currentPage === 1}
+        className="text-gray-500 cursor-pointer"
+      >
+        <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+      </Button>
+      <div className="text-sm font-medium text-gray-600 px-4">
+        Page {currentPage} of {totalPages}
+      </div>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => {
+          onPageChange(Math.min(totalPages, currentPage + 1));
+          window.scrollTo({ top: 400, behavior: "smooth" });
+        }}
+        disabled={currentPage === totalPages}
+        className="text-gray-500 cursor-pointer"
+      >
+        Next <ChevronRight className="w-4 h-4 ml-1" />
+      </Button>
+    </div>
+  );
 };
 
 const CHART_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -100,7 +126,22 @@ const CHART_DATA = {
 };
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState<TabKey>("profile");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const initialTab = (searchParams.get('tab') as TabKey) || "profile";
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
+  
+  const [buyPage, setBuyPage] = useState(1);
+  const [sellPage, setSellPage] = useState(1);
+  const buyItemsPerPage = 5;
+  const sellItemsPerPage = 9;
+  
+  const paginatedBuy = BUY_LIST.slice((buyPage - 1) * buyItemsPerPage, buyPage * buyItemsPerPage);
+  const totalBuyPages = Math.ceil(BUY_LIST.length / buyItemsPerPage);
+
+  const paginatedSell = SELL_LIST.slice((sellPage - 1) * sellItemsPerPage, sellPage * sellItemsPerPage);
+  const totalSellPages = Math.ceil(SELL_LIST.length / sellItemsPerPage);
+
   const [editingInfo, setEditingInfo] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
   const [activityVisible, setActivityVisible] = useState(true);
@@ -144,9 +185,9 @@ const Profile = () => {
 
               <div className="flex gap-8 pb-3">
                 {[
-                  { label: "Tổng giá trị", value: USER_INFO.stats.totalValue, icon: <TrendingUp className="w-4 h-4" /> },
-                  { label: "BĐS đăng bán", value: USER_INFO.stats.properties, icon: <Building2 className="w-4 h-4" /> },
-                  { label: "Lịch hẹn", value: USER_INFO.stats.appointments, icon: <Calendar className="w-4 h-4" /> },
+                  { label: "Total Value", value: USER_INFO.stats.totalValue, icon: <TrendingUp className="w-4 h-4" /> },
+                  { label: "Active Listings", value: USER_INFO.stats.properties, icon: <Building2 className="w-4 h-4" /> },
+                  { label: "Appointments", value: USER_INFO.stats.appointments, icon: <Calendar className="w-4 h-4" /> },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
                     <div className="text-2xl font-bold text-gray-900 font-['Inter']">{s.value}</div>
@@ -399,24 +440,24 @@ const Profile = () => {
             <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 font-['Inter']">Lịch Hẹn Xem Nhà</h2>
-                  <p className="text-sm text-gray-400 mt-1">Các bất động sản bạn quan tâm & đã đặt lịch</p>
+                  <h2 className="text-2xl font-bold text-gray-900 font-['Inter']">Viewing Appointments</h2>
+                  <p className="text-sm text-gray-400 mt-1">Properties you are interested in & scheduled</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
-                {BUY_LIST.map((apt) => (
+                {paginatedBuy.map((apt) => (
                   <div key={apt.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-5 flex flex-col md:flex-row items-center gap-5 cursor-pointer group">
                     <img src={apt.image} alt={apt.property} className="w-full md:w-28 h-28 rounded-xl object-cover flex-shrink-0 group-hover:scale-[1.02] transition-transform" />
                     <div className="flex-1 min-w-0">
                       <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#0F766E] transition-colors truncate">{apt.property}</h4>
-                      <p className="text-sm text-gray-400 mt-1">Gặp: <span className="font-semibold text-gray-600">{apt.seller}</span></p>
+                      <p className="text-sm text-gray-400 mt-1">Meeting with: <span className="font-semibold text-gray-600">{apt.seller}</span></p>
                       <div className="text-xl font-bold text-[#0F766E] font-['Inter'] mt-2">{apt.price}</div>
                     </div>
                     <div className="flex items-center gap-3 bg-[#F8FAFB] px-4 py-3 rounded-xl border border-gray-100 flex-shrink-0">
                       <Calendar className="w-5 h-5 text-[#14B8A6]" />
                       <div>
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Thời gian</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Time</div>
                         <div className="text-sm font-semibold text-gray-700">{apt.date}</div>
                       </div>
                     </div>
@@ -425,13 +466,21 @@ const Profile = () => {
                         {apt.status === "Confirmed" ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                         {apt.status}
                       </span>
-                      <Button variant="outline" size="sm" className="rounded-full border-gray-200 text-gray-600 hover:border-[#14B8A6] hover:text-[#0F766E] cursor-pointer">
-                        Chi tiết <ArrowRight className="w-3 h-3 ml-1" />
-                      </Button>
+                      <Link to={`/appointment/${apt.id}`}>
+                        <Button variant="outline" size="sm" className="rounded-full border-gray-200 text-gray-600 hover:border-[#14B8A6] hover:text-[#0F766E] cursor-pointer">
+                          Details <ArrowRight className="w-3 h-3 ml-1" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 ))}
               </div>
+              
+              <PaginationControls 
+                currentPage={buyPage} 
+                totalPages={totalBuyPages} 
+                onPageChange={setBuyPage} 
+              />
             </div>
           )}
 
@@ -439,24 +488,33 @@ const Profile = () => {
             <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 font-['Inter']">BĐS Đang Bán</h2>
-                  <p className="text-sm text-gray-400 mt-1">Quản lý các bất động sản bạn đang niêm yết</p>
+                  <h2 className="text-2xl font-bold text-gray-900 font-['Inter']">Properties for Sale</h2>
+                  <p className="text-sm text-gray-400 mt-1">Manage your active property listings</p>
                 </div>
-                <Button className="bg-[#0369A1] hover:bg-[#0369A1]/90 text-white rounded-full px-6 cursor-pointer">
-                  + Thêm BĐS
+                <Button 
+                  className="bg-[#0369A1] hover:bg-[#0369A1]/90 text-white rounded-full px-6 cursor-pointer"
+                  onClick={() => navigate('/add-property')}
+                >
+                  + Add Property
                 </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {SELL_LIST.map((item) => (
-                  <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden cursor-pointer group">
+                {paginatedSell.map((item) => (
+                  <div key={item.id} onClick={() => navigate('/manage-property/' + item.id)} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden cursor-pointer group">
                     <div className="relative h-48 overflow-hidden">
                       <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold border ${statusColor(item.status)}`}>
-                        {item.status}
-                      </span>
+                      {item.newAppointments > 0 && (
+                        <div className="absolute top-3 right-3 bg-rose-500 text-white text-xs font-bold px-2 rounded flex items-center gap-1 shadow-md animate-pulse">
+                          <span className="relative flex h-2 w-2 mr-1">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                          </span>
+                          {item.newAppointments} New Appointments
+                        </div>
+                      )}
                       <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-lg">
-                        {item.daysListed} ngày
+                        {item.daysListed} days
                       </div>
                     </div>
                     <div className="p-5">
@@ -465,21 +523,17 @@ const Profile = () => {
                         <MapPin className="w-3 h-3 flex-shrink-0 mt-0.5" />
                         <span>{item.address}</span>
                       </div>
-                      <div className="text-2xl font-bold text-[#0F766E] font-['Inter'] mt-4">{item.price}</div>
-                      <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-50 text-xs text-gray-400">
-                        <div className="flex items-center gap-1.5">
-                          <Eye className="w-3.5 h-3.5" />
-                          <span className="font-semibold text-gray-600">{item.views}</span> views
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Users className="w-3.5 h-3.5" />
-                          <span className="font-semibold text-gray-600">{item.leads}</span> leads
-                        </div>
-                      </div>
+                      <div className="text-2xl font-bold text-[#0F766E] font-['Inter'] mt-4 mb-4">{item.price}</div>
                     </div>
                   </div>
                 ))}
               </div>
+              
+              <PaginationControls 
+                currentPage={sellPage} 
+                totalPages={totalSellPages} 
+                onPageChange={setSellPage} 
+              />
             </div>
           )}
 

@@ -2,11 +2,11 @@ import { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  MapPin, Cpu, Sparkles, ChevronDown, RotateCcw, Search,
+import { MapPin, Cpu, Sparkles, ChevronDown, RotateCcw, Search,
   Home, Layers, BedDouble, Bath, ArrowRight, CheckCircle2,
   TrendingUp, AlertCircle, Loader2, Navigation, Building2, LayoutGrid
 } from 'lucide-react';
+import { Map, MapMarker, MarkerContent, MapControls, useMap } from '@/components/ui/map';
 
 // ─── Types ───────────────────────────────────────────────
 interface Province {
@@ -128,83 +128,30 @@ function StepCard({ num, title, desc, icon: Icon }: { num: number; title: string
   );
 }
 
-// ─── Map Component (MapLibre) ────────────────────────────
+// ─── Map Component (using ui/map) ────────────────────────────
+function MapClickListener({ onCoordChange }: { onCoordChange: (lat: string, lng: string) => void }) {
+  const { map, isLoaded } = useMap();
+  useEffect(() => {
+    if (!map || !isLoaded) return;
+    // We add a 'any' cast to the event because MapLibre types vary.
+    const handleClick = (e: any) => {
+      const { lat: clickLat, lng: clickLng } = e.lngLat;
+      onCoordChange(clickLat.toFixed(6), clickLng.toFixed(6));
+    };
+    map.on('click', handleClick);
+    return () => { map.off('click', handleClick); };
+  }, [map, isLoaded, onCoordChange]);
+  return null;
+}
+
 function MapPanel({
   lat, lng, onCoordChange,
 }: {
   lat: string; lng: string; onCoordChange: (lat: string, lng: string) => void;
 }) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
-  const [mapLibre, setMapLibre] = useState<any>(null);
-  const [markerSet, setMarkerSet] = useState(false);
-
-  // Lazy-load MapLibre to avoid SSR issues
-  useEffect(() => {
-    import('maplibre-gl').then(ml => {
-      import('maplibre-gl/dist/maplibre-gl.css').catch(() => {});
-      setMapLibre(ml.default ?? ml);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!mapLibre || !mapContainerRef.current || mapRef.current) return;
-
-    const map = new mapLibre.Map({
-      container: mapContainerRef.current,
-      style: {
-        version: 8,
-        sources: {
-          osm: {
-            type: 'raster',
-            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors',
-          },
-        },
-        layers: [{ id: 'osm-tiles', type: 'raster', source: 'osm' }],
-      },
-      center: [106.0, 16.0],
-      zoom: 5,
-    });
-
-    map.on('click', (e: any) => {
-      const { lat: clickLat, lng: clickLng } = e.lngLat;
-      const latStr = clickLat.toFixed(6);
-      const lngStr = clickLng.toFixed(6);
-
-      if (markerRef.current) {
-        markerRef.current.setLngLat([clickLng, clickLat]);
-      } else {
-        const el = document.createElement('div');
-        el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="40" fill="none">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#0F766E"/>
-          <circle cx="12" cy="9" r="2.5" fill="white"/>
-        </svg>`;
-        el.style.cursor = 'pointer';
-        el.style.transform = 'translateY(-40px)';
-
-        const marker = new mapLibre.Marker({ element: el, anchor: 'bottom' })
-          .setLngLat([clickLng, clickLat])
-          .addTo(map);
-        markerRef.current = marker;
-      }
-
-      setMarkerSet(true);
-      onCoordChange(latStr, lngStr);
-    });
-
-    mapRef.current = map;
-    return () => { map.remove(); mapRef.current = null; };
-  }, [mapLibre, onCoordChange]);
+  const markerSet = lat !== '' && lng !== '';
 
   const handleReset = () => {
-    if (markerRef.current) {
-      markerRef.current.remove();
-      markerRef.current = null;
-    }
-    setMarkerSet(false);
     onCoordChange('', '');
   };
 
@@ -228,11 +175,26 @@ function MapPanel({
         )}
       </div>
 
-      <div
-        ref={mapContainerRef}
-        className="flex-1 min-h-[280px] rounded-xl overflow-hidden border border-slate-200 cursor-crosshair"
-        style={{ position: 'relative' }}
-      />
+      <div className="flex-1 min-h-[280px] rounded-xl overflow-hidden border border-slate-200 cursor-crosshair relative">
+        <Map
+          viewport={{ center: [106.0, 16.0], zoom: 5 }}
+        >
+          <MapClickListener onCoordChange={onCoordChange} />
+          {markerSet && (
+            <MapMarker longitude={parseFloat(lng)} latitude={parseFloat(lat)}>
+              <MarkerContent>
+                <div style={{ transform: 'translateY(-20px)' }}>
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="40" fill="none">
+                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#0F766E"/>
+                     <circle cx="12" cy="9" r="2.5" fill="white"/>
+                   </svg>
+                </div>
+              </MarkerContent>
+            </MapMarker>
+          )}
+          <MapControls position="bottom-right" showZoom showLocate />
+        </Map>
+      </div>
 
       {/* Coordinates display */}
       <div className="grid grid-cols-2 gap-2">
